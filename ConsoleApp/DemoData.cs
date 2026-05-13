@@ -6,12 +6,12 @@ public static class DemoData
 {
     public static void Seed(PlannerManager planner)
     {
-        var performer1 = new Performer(
+        var performer1 = planner.AddPerformer(
             "Вероніка Романенко",
             "veronika@example.com"
         );
 
-        var performer2 = new Performer(
+        var performer2 = planner.AddPerformer(
             "Петро Петренко",
             "oleksandr@example.com"
         );

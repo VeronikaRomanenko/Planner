@@ -20,7 +20,8 @@ public class MainMenu
             Console.WriteLine("1. Додати");
             Console.WriteLine("2. Переглянути за період");
             Console.WriteLine("3. Пошук");
-            Console.WriteLine("4. Завершити роботу");
+            Console.WriteLine("4. Виконавці");
+            Console.WriteLine("5. Завершити роботу");
             
             var command = ConsoleInput.ReadRequiredString("Оберіть команду: ");
             
@@ -37,8 +38,12 @@ public class MainMenu
                 case "3":
                     new SearchMenu(_planner).Run();
                     break;
-
+                
                 case "4":
+                    new PerformersMenu(_planner).Run();
+                    break;
+
+                case "5":
                     return;
 
                 default:

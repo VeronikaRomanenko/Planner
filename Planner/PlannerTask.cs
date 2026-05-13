@@ -2,9 +2,10 @@ namespace Planner;
 
 public class PlannerTask : PlannerItem
 {
-    public DateTime? DueDate { get; set; }
-    public bool IsCompleted { get; set; }
-    public DateTime? CompletedAt { get; set; }
+    public DateTime? DueDate { get; private set; }
+    public bool IsCompleted { get; private set; }
+    public DateTime? CompletedAt { get; private set; }
+    public TimeSpan? EstimatedDuration  { get; private set; }
     
     public PlannerTask(
         string title,
@@ -23,6 +24,11 @@ public class PlannerTask : PlannerItem
             throw new ArgumentException("Start time cannot be later than due date.");
 
         DueDate = dueDate;
+    }
+
+    public void SetEstimatedDuration(TimeSpan? estimatedDuration)
+    {
+        EstimatedDuration = estimatedDuration;
     }
 
     public void Complete(DateTime completedAt)

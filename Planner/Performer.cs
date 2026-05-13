@@ -4,9 +4,9 @@ public class Performer
 {
     public Guid Id { get; }
     public string Name { get; private set; }
-    public string Email { get; private set; }
+    public string? Email { get; private set; }
 
-    public Performer(string name, string email)
+    public Performer(string name, string? email = null)
     {
         Id = Guid.NewGuid();
         SetName(name);
@@ -19,9 +19,8 @@ public class Performer
         Name = newName;
     }
 
-    public void SetEmail(string newEmail)
+    public void SetEmail(string? newEmail)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(newEmail);
         // TODO: validate email
         Email = newEmail;
     }

@@ -81,6 +81,23 @@ public static class ConsoleInput
             );
         }
     }
+    
+    public static int ReadInt(string message)
+    {
+        while (true)
+        {
+            Console.Write(message);
+
+            var value = Console.ReadLine();
+
+            if (int.TryParse(value, out var number))
+                return number;
+
+            PrintValidationError(
+                "Введіть ціле число."
+            );
+        }
+    }
 
     public static int ReadPositiveInt(string message)
     {
@@ -113,6 +130,32 @@ public static class ConsoleInput
             PrintValidationError(
                 "Невірний формат GUID."
             );
+        }
+    }
+    
+    public static int ReadIndex(string message, int count)
+    {
+        while (true)
+        {
+            Console.Write(message);
+
+            var value = Console.ReadLine();
+
+            if (!int.TryParse(value, out var index))
+            {
+                PrintValidationError("Введіть число.");
+                continue;
+            }
+            
+            if (index < 1 || index > count)
+            {
+                PrintValidationError(
+                    $"Введіть число від 1 до {count}."
+                );
+                continue;
+            }
+
+            return index - 1;
         }
     }
 
