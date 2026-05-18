@@ -6,13 +6,13 @@ namespace ConsoleApp.Menus;
 public class PeriodActionsMenu
 {
     private readonly PlannerManager _planner;
-    private readonly IEnumerable<PlannerItem> _items;
+    private readonly IReadOnlyList<PlannerItem> _items;
     private readonly DateTime? _start;
     private readonly DateTime? _end;
 
     public PeriodActionsMenu(
         PlannerManager planner,
-        IEnumerable<PlannerItem> items,
+        IReadOnlyList<PlannerItem> items,
         DateTime? start,
         DateTime? end)
     {
@@ -55,7 +55,7 @@ public class PeriodActionsMenu
                     break;
 
                 case "2":
-                    MoveTask();
+                    MoveItem();
                     break;
 
                 case "3":
@@ -93,11 +93,8 @@ public class PeriodActionsMenu
             return null;
         }
 
-        var id = ConsoleInput.ReadGuid("Введіть ID запису: ");
-        var item = _planner.GetItemById(id);
-
-        if (item is null)
-            Console.WriteLine("Запис не знайдено.");
+        var index = ConsoleInput.ReadIndex("Введіть номер запису: ", _items.Count);
+        var item = _items[index];
 
         return item;
     }
@@ -112,18 +109,16 @@ public class PeriodActionsMenu
         new EditItemMenu(_planner, item).Run();
     }
 
-    private void MoveTask()
+    private void MoveItem()
     {
         var item = SelectItem();
 
-        if (item is not PlannerTask task)
-        {
-            Console.WriteLine("Перенесення доступне тільки для справ.");
+        if (item is null)
             return;
-        }
-
+        
         var newDate = ConsoleInput.ReadDateTime("Нова дата/час: ");
-        task.SetDueDate(newDate);
+        
+        item.SetRelevantDateTime(newDate);
 
         Console.WriteLine("Справу перенесено.");
     }
@@ -162,9 +157,9 @@ public class PeriodActionsMenu
             return;
 
         var newDate = ConsoleInput.ReadDateTime("Нова дата для перенесення: ");
-        // var count = _planner.MoveUncompletedTasks(_start.Value, _end.Value, newDate);
-        //
-        // Console.WriteLine($"Перенесено справ: {count}");
+        var count = _planner.MoveUncompletedTasks(_start.Value, _end.Value, newDate);
+        
+        Console.WriteLine($"Перенесено справ: {count}");
     }
 
     private void DeleteAllPeriodItems()
@@ -175,8 +170,8 @@ public class PeriodActionsMenu
         if (!ConsoleInput.Confirm("Видалити всі записи за вибраний період?"))
             return;
 
-        // var count = _planner.DeleteItemsForPeriod(_start.Value, _end.Value);
-        //
-        // Console.WriteLine($"Видалено записів: {count}");
+        var count = _planner.DeleteItemsForPeriod(_start.Value, _end.Value);
+        
+        Console.WriteLine($"Видалено записів: {count}");
     }
 }

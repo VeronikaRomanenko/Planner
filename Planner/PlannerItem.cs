@@ -7,7 +7,6 @@ public abstract class PlannerItem
     public Guid Id { get; }
     public string Title { get; private set; }
     public string Description { get; private set; }
-    public DateTime? StartTime { get; private set; }
     public string? Location { get; private set; }
     
     public IReadOnlyList<Performer> Performers => _performers;
@@ -15,7 +14,6 @@ public abstract class PlannerItem
     protected PlannerItem(
         string title,
         string description,
-        DateTime? startTime = null,
         string? location = null
     )
     {
@@ -23,7 +21,6 @@ public abstract class PlannerItem
 
         SetTitle(title);
         SetDescription(description);
-        SetStartTime(startTime);
         SetLocation(location);
     }
 
@@ -36,11 +33,6 @@ public abstract class PlannerItem
     public void SetDescription(string description)
     {
         Description = description ?? string.Empty;
-    }
-    
-    public void SetStartTime(DateTime? startTime)
-    {
-        StartTime = startTime;
     }
 
     public void SetLocation(string? location)
@@ -69,5 +61,6 @@ public abstract class PlannerItem
         return true;
     }
 
+    public abstract void SetRelevantDateTime(DateTime? newDate);
     public abstract DateTime? GetRelevantDateTime();
 }

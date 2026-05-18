@@ -45,23 +45,26 @@ public class PeriodViewMenu
     
     private void ShowPeriod(DateTime? start, DateTime? end)
     {
-        var items = _planner.SearchItems(new PlannerSearchParams()
+        var searchParams = new PlannerSearchParams()
         {
             StartDate = start,
             EndDate = end
-        });
+        };
+        
+        var items = _planner.SearchItems(searchParams);
 
         ConsolePrinter.PrintItems(items);
 
-        // var overlaps = _planner.FindOverlaps(start, end);
+        var overlaps = _planner.FindOverlaps(searchParams);
 
-        // if (overlaps.Any())
-        // {
-        //     Console.WriteLine();
-        //     Console.WriteLine("Попередження про накладки:");
-        //     ConsolePrinter.PrintOverlaps(overlaps);
-        // }
-        //
-        new PeriodActionsMenu(_planner, items, start, end).Run();
+        if (overlaps.Any())
+        {
+            // TODO: color
+            Console.WriteLine();
+            Console.WriteLine("Попередження про накладки:");
+            ConsolePrinter.PrintOverlaps(overlaps);
+        }
+        
+        new PeriodActionsMenu(_planner, items.ToList(), start, end).Run();
     }
 }

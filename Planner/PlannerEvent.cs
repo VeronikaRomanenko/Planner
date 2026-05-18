@@ -2,9 +2,10 @@ namespace Planner;
 
 public class PlannerEvent : PlannerItem
 {
+    public DateTime StartTime { get; private set; }
     public TimeSpan Duration { get; private set; }
     
-    public DateTime EndTime => StartTime!.Value.Add(Duration);
+    public DateTime EndTime => StartTime.Add(Duration);
     
     public PlannerEvent(
         string title,
@@ -12,9 +13,15 @@ public class PlannerEvent : PlannerItem
         DateTime startTime,
         TimeSpan duration,
         string location
-    ) : base(title, description, startTime, location)
+    ) : base(title, description, location)
     {
+        SetStartTime(startTime);
         SetDuration(duration);
+    }
+    
+    public void SetStartTime(DateTime startTime)
+    {
+        StartTime = startTime;
     }
     
     public void SetDuration(TimeSpan duration)
@@ -26,7 +33,17 @@ public class PlannerEvent : PlannerItem
         
         Duration = duration;
     }
-    
+
+    public override void SetRelevantDateTime(DateTime? newDate)
+    {
+        if (!newDate.HasValue)
+            throw new ArgumentException(
+                "Event must have a start date."
+            );
+        
+        StartTime = newDate.Value;
+    }
+
     public override DateTime? GetRelevantDateTime()
     {
         return StartTime;

@@ -21,6 +21,12 @@ public class Performer
 
     public void SetEmail(string? newEmail)
     {
+        // if (!Regex.IsMatch(newEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase))
+        // {
+        //     Console.WriteLine("Невалідна електронна адреса");
+        //     return;
+        // }
+        
         // TODO: validate email
         Email = newEmail;
     }

@@ -65,32 +65,47 @@ public class ItemPerformersMenu
         }
     }
     
-    private Performer? SelectPerformer()
+    private Performer? SelectPerformer(IReadOnlyList<Performer> performers)
     {
-        if (!_planner.Performers.Any())
+        if (!performers.Any())
         {
             Console.WriteLine("Список порожній.");
             return null;
         }
 
-        var index = ConsoleInput.ReadIndex("Введіть номер виконавця: ", _planner.Performers.Count);
-        var performer = _planner.Performers[index];
+        var index = ConsoleInput.ReadIndex("Введіть номер виконавця: ", performers.Count);
+        var performer = performers[index];
 
         return performer;
     }
 
     private void AddFromList()
     {
-        // TODO: ask for index, add to item
+        var performer = SelectPerformer(_planner.Performers);
+
+        if (performer is null)
+            return;
+        
+        _item.AddPerformer(performer);
     }
 
     private void RemovePerformer()
     {
-        // TODO: ask for index, remove from item
+        var performer = SelectPerformer(_item.Performers);
+
+        if (performer is null)
+            return;
+        
+        _item.RemovePerformer(performer.Id);
     }
 
     private void CreateNew()
     {
-        // TODO: ask for name and email, create in planner, add to item
+        var name = ConsoleInput.ReadRequiredString("Імʼя виконавця: ");
+        var email = ConsoleInput.ReadOptionalString("Електронна пошта виконавця: ");
+
+        var performer = _planner.AddPerformer(name, email);
+        
+        _item.AddPerformer(performer);
     }
 }

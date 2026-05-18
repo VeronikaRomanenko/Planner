@@ -64,8 +64,16 @@ public static class ConsolePrinter
                 _ => "Запис"
             },
             item.Title,
-            item.StartTime?.ToString("dd.MM.yyyy HH:mm") ?? "-",
-            GetEndDate(item),
+            item switch
+            {
+                PlannerEvent eventItem =>
+                    $"{eventItem.StartTime:dd.MM.yyyy HH:mm} - {eventItem.EndTime:dd.MM.yyyy HH:mm}",
+
+                PlannerTask { DueDate: not null } taskItem =>
+                    $"{taskItem.DueDate.Value:dd.MM.yyyy HH:mm}",
+
+                _ => "-"
+            },
             string.IsNullOrWhiteSpace(item.Location) ? "-" : item.Location,
             item.Performers.Any()
                 ? string.Join(", ", item.Performers.Select(p => p.Name))
@@ -75,9 +83,8 @@ public static class ConsolePrinter
                 : "-"
         }).ToList<IReadOnlyList<string>>();
 
-        // TODO: change end date to end/due date
         PrintTable(
-            ["№", "Тип", "Назва", "Початок", "Кінець", "Місце", "Виконавці", "Статус"],
+            ["№", "Тип", "Назва", "Дата/час", "Місце", "Виконавці", "Статус"],
             rows
         );
 
@@ -106,181 +113,78 @@ public static class ConsolePrinter
             rows
         );
     }
-
-    // TODO: move somewhere
-    private static string GetEndDate(PlannerItem item)
-    {
-        return item switch
-        {
-            PlannerEvent eventItem =>
-                eventItem.EndTime.ToString("dd.MM.yyyy HH:mm"),
-
-            PlannerTask taskItem when taskItem.DueDate.HasValue =>
-                taskItem.DueDate.Value.ToString("dd.MM.yyyy HH:mm"),
-
-            PlannerTask taskItem
-                when taskItem.StartTime.HasValue && taskItem.EstimatedDuration.HasValue =>
-                taskItem.StartTime.Value
-                    .Add(taskItem.EstimatedDuration.Value)
-                    .ToString("dd.MM.yyyy HH:mm"),
-
-            _ => "-"
-        };
-    }
-
-    public static void PrintItem(PlannerItem item)
-    {
-        Console.WriteLine();
-
-        Console.ForegroundColor = ConsoleColor.Cyan;
-
-        Console.WriteLine(
-            item switch
-            {
-                PlannerEvent => "[ЗАХІД]",
-                PlannerTask => "[СПРАВА]",
-                _ => "[ЗАПИС]"
-            }
-        );
-
-        Console.ResetColor();
-
-        Console.WriteLine($"ID: {item.Id}");
-        Console.WriteLine($"Назва: {item.Title}");
-
-        if (!string.IsNullOrWhiteSpace(item.Description))
-            Console.WriteLine($"Опис: {item.Description}");
-
-        if (item.StartTime.HasValue)
-        {
-            Console.WriteLine(
-                $"Початок: {item.StartTime.Value:dd.MM.yyyy HH:mm}"
-            );
-        }
-
-        if (!string.IsNullOrWhiteSpace(item.Location))
-            Console.WriteLine($"Місце: {item.Location}");
-
-        if (item.Performers.Any())
-        {
-            Console.WriteLine(
-                $"Виконавці: {string.Join(", ", item.Performers.Select(p => p.Name))}"
-            );
-        }
-
-        switch (item)
-        {
-            case PlannerEvent eventItem:
-                PrintEvent(eventItem);
-                break;
-
-            case PlannerTask taskItem:
-                PrintTask(taskItem);
-                break;
-        }
-    }
-
-    private static void PrintEvent(PlannerEvent item)
-    {
-        Console.WriteLine(
-            $"Тривалість: {item.Duration.TotalMinutes} хв."
-        );
-
-        Console.WriteLine(
-            $"Кінець: {item.EndTime:dd.MM.yyyy HH:mm}"
-        );
-    }
-
-    private static void PrintTask(PlannerTask item)
-    {
-        if (item.DueDate.HasValue)
-        {
-            Console.WriteLine(
-                $"Дедлайн: {item.DueDate.Value:dd.MM.yyyy HH:mm}"
-            );
-        }
-
-        Console.WriteLine(
-            $"Статус: {(item.IsCompleted ? "Виконано" : "Не виконано")}"
-        );
-
-        if (item.CompletedAt.HasValue)
-        {
-            Console.WriteLine(
-                $"Виконано: {item.CompletedAt.Value:dd.MM.yyyy HH:mm}"
-            );
-        }
-
-        if (item.EstimatedDuration.HasValue)
-        {
-            Console.WriteLine(
-                $"Орієнтовна тривалість: {item.EstimatedDuration.Value.TotalMinutes} хв."
-            );
-        }
-
-        if (!item.IsCompleted && item.IsOverdue(DateTime.Now))
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-
-            Console.WriteLine("Увага: справа прострочена.");
-
-            Console.ResetColor();
-        }
-    }
-
+    
     public static void PrintOverlaps(
-        IEnumerable<(PlannerItem First, PlannerItem Second)> overlaps
+        IEnumerable<PlannerEvent> overlaps
     )
     {
         var overlapsList = overlaps.ToList();
-
-        if (!overlapsList.Any())
+    
+        if (overlapsList.Count == 0)
         {
             Console.WriteLine("Накладки не знайдено.");
             return;
         }
-
+        
         foreach (var overlap in overlapsList)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-
-            Console.WriteLine(
-                $"- \"{overlap.First.Title}\" перетинається з \"{overlap.Second.Title}\""
-            );
-
-            Console.ResetColor();
-
-            PrintOverlapItemInfo(overlap.First);
-            PrintOverlapItemInfo(overlap.Second);
-
-            Console.WriteLine();
+            Console.WriteLine($"{overlap.Title}: {overlap.StartTime:dd.MM.yyyy HH:mm} - {overlap.EndTime:dd.MM.yyyy HH:mm}");
         }
     }
 
-    private static void PrintOverlapItemInfo(PlannerItem item)
-    {
-        switch (item)
-        {
-            case PlannerEvent eventItem:
-                Console.WriteLine(
-                    $"  {eventItem.StartTime:dd.MM.yyyy HH:mm} - {eventItem.EndTime:HH:mm}"
-                );
-                break;
-
-            case PlannerTask taskItem
-                when taskItem.StartTime.HasValue &&
-                     taskItem.EstimatedDuration.HasValue:
-
-                var end = taskItem.StartTime.Value
-                    .Add(taskItem.EstimatedDuration.Value);
-
-                Console.WriteLine(
-                    $"  {taskItem.StartTime:dd.MM.yyyy HH:mm} - {end:HH:mm}"
-                );
-
-                break;
-        }
-    }
+    // public static void PrintOverlaps(
+    //     IEnumerable<(PlannerItem First, PlannerItem Second)> overlaps
+    // )
+    // {
+    //     var overlapsList = overlaps.ToList();
+    //
+    //     if (!overlapsList.Any())
+    //     {
+    //         Console.WriteLine("Накладки не знайдено.");
+    //         return;
+    //     }
+    //
+    //     foreach (var overlap in overlapsList)
+    //     {
+    //         Console.ForegroundColor = ConsoleColor.Yellow;
+    //
+    //         Console.WriteLine(
+    //             $"- \"{overlap.First.Title}\" перетинається з \"{overlap.Second.Title}\""
+    //         );
+    //
+    //         Console.ResetColor();
+    //
+    //         PrintOverlapItemInfo(overlap.First);
+    //         PrintOverlapItemInfo(overlap.Second);
+    //
+    //         Console.WriteLine();
+    //     }
+    // }
+    //
+    // private static void PrintOverlapItemInfo(PlannerItem item)
+    // {
+    //     switch (item)
+    //     {
+    //         case PlannerEvent eventItem:
+    //             Console.WriteLine(
+    //                 $"  {eventItem.StartTime:dd.MM.yyyy HH:mm} - {eventItem.EndTime:HH:mm}"
+    //             );
+    //             break;
+    //
+    //         case PlannerTask taskItem
+    //             when taskItem.StartTime.HasValue &&
+    //                  taskItem.EstimatedDuration.HasValue:
+    //
+    //             var end = taskItem.StartTime.Value
+    //                 .Add(taskItem.EstimatedDuration.Value);
+    //
+    //             Console.WriteLine(
+    //                 $"  {taskItem.StartTime:dd.MM.yyyy HH:mm} - {end:HH:mm}"
+    //             );
+    //
+    //             break;
+    //     }
+    // }
 
     // public static void PrintNotifications(
     //     Services.NotificationQueue queue

@@ -71,7 +71,6 @@ public static class DemoData
             "Підготувати UML-діаграму",
             "Завершити діаграму класів",
             DateTime.Today.AddHours(18),
-            DateTime.Today.AddHours(15),
             null
         );
 
@@ -81,7 +80,6 @@ public static class DemoData
             "Написати пояснювальну записку",
             "Розділ про ООП-модель",
             DateTime.Today.AddDays(1).AddHours(20),
-            DateTime.Today.AddDays(1).AddHours(16),
             "Дім"
         );
 
@@ -91,7 +89,6 @@ public static class DemoData
             "Підготувати список літератури",
             "Оформити джерела за ДСТУ",
             DateTime.Today.AddDays(-1).AddHours(18),
-            DateTime.Today.AddDays(-1).AddHours(14),
             null
         );
 
@@ -101,7 +98,6 @@ public static class DemoData
             "Надіслати звіт викладачу",
             "Надіслати проміжну версію",
             DateTime.Today.AddDays(-1).AddHours(12),
-            DateTime.Today.AddDays(-1).AddHours(10),
             null
         );
 
@@ -112,7 +108,6 @@ public static class DemoData
             "Придбати канцтовари",
             "Купити блокнот і маркери",
             null,
-            null,
             "Магазин"
         );
 
@@ -122,7 +117,6 @@ public static class DemoData
             "Підготувати презентацію",
             "Створити слайди для захисту",
             DateTime.Now.AddHours(2).AddMinutes(15),
-            DateTime.Now.AddHours(2),
             "Дім"
         );
 

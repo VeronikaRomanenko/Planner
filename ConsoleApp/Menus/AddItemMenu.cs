@@ -53,14 +53,13 @@ public class AddItemMenu
         var location = ConsoleInput.ReadRequiredString("Місце проведення: ");
 
         var item = new PlannerEvent(title, description, startTime, duration, location);
-
-        if (!ConfirmOverlaps(item))
-            return;
-
-        _planner.AddItem(item);
         
         Console.WriteLine("Виконавці: ");
         new ItemPerformersMenu(_planner, item).Run();
+        
+        if (!ConfirmOverlaps(item)) return;
+        
+        _planner.AddItem(item);
         
         Console.WriteLine("Захід додано.");
     }
@@ -69,14 +68,10 @@ public class AddItemMenu
     {
         var title = ConsoleInput.ReadRequiredString("Назва справи: ");
         var description = ConsoleInput.ReadOptionalString("Опис: ");
-        var startTime = ConsoleInput.ReadOptionalDateTime("Дата і час початку (Enter — пропустити): ");
         var dueDate = ConsoleInput.ReadOptionalDateTime("Дедлайн (Enter — пропустити): ");
         var location = ConsoleInput.ReadOptionalString("Місце (Enter — пропустити): ");
 
-        var task = new PlannerTask(title, description, dueDate, startTime, location);
-
-        if (!ConfirmOverlaps(task))
-            return;
+        var task = new PlannerTask(title, description, dueDate, location);
 
         _planner.AddItem(task);
         
@@ -86,16 +81,18 @@ public class AddItemMenu
         Console.WriteLine("Справу додано.");
     }
 
-    private bool ConfirmOverlaps(PlannerItem item)
+    private bool ConfirmOverlaps(PlannerEvent item)
     {
-        var overlaps = _planner.FindOverlapsForItem(item);
+        var overlaps = _planner.FindOverlapsForEvent(item);
 
         if (!overlaps.Any())
             return true;
 
         Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("Увага! Знайдено накладки:");
-        // ConsolePrinter.PrintOverlaps(overlaps);
+        ConsolePrinter.PrintOverlaps(overlaps);
+        Console.ResetColor();
 
         Console.WriteLine("1. Створити з накладкою");
         Console.WriteLine("2. Скасувати створення");

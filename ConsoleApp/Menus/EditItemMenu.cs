@@ -22,7 +22,7 @@ public class EditItemMenu
             Console.WriteLine($"=== Редагування: {_item.Title} ===");
             Console.WriteLine("1. Змінити назву");
             Console.WriteLine("2. Змінити опис");
-            Console.WriteLine("3. Змінити дату/час початку");
+            Console.WriteLine("3. Змінити дату/час");
             Console.WriteLine("4. Змінити місце");
             Console.WriteLine("5. Змінити виконавців");
 
@@ -30,14 +30,13 @@ public class EditItemMenu
             {
                 case PlannerEvent:
                     Console.WriteLine("6. Змінити тривалість");
-                    Console.WriteLine("7. Назад");
                     break;
                 case PlannerTask:
-                    Console.WriteLine("6. Змінити дедлайн");
-                    Console.WriteLine("7. Позначити як виконану/невиконану");
-                    Console.WriteLine("8. Назад");
+                    Console.WriteLine("6. Позначити як виконану/невиконану");
                     break;
             }
+            
+            Console.WriteLine("7. Назад");
 
             var command = ConsoleInput.ReadRequiredString("Оберіть дію: ");
 
@@ -52,7 +51,7 @@ public class EditItemMenu
                     break;
 
                 case "3":
-                    ChangeStartTime();
+                    ChangeDateTime();
                     break;
 
                 case "4":
@@ -68,15 +67,10 @@ public class EditItemMenu
                     break;
 
                 case "6" when _item is PlannerTask task:
-                    task.SetDueDate(ConsoleInput.ReadOptionalDateTime("Новий дедлайн: "));
-                    break;
-
-                case "7" when _item is PlannerTask task:
                     ToggleTaskCompleted(task);
                     break;
 
                 case "7":
-                case "8":
                     return;
 
                 default:
@@ -86,29 +80,34 @@ public class EditItemMenu
         }
     }
 
-    private void ChangeStartTime()
+    private void ChangeDateTime()
     {
-        var oldStartTime = _item.StartTime;
-        var newStartTime = ConsoleInput.ReadOptionalDateTime("Нова дата/час початку: ");
+        var oldDateTime = _item.GetRelevantDateTime();
+        var newDateTime = ConsoleInput.ReadOptionalDateTime("Нова дата/час початку: ");
+        
+        _item.SetRelevantDateTime(newDateTime);
 
-        _item.SetStartTime(newStartTime);
-
-        var overlaps = _planner.FindOverlapsForItem(_item);
-
-        if (!overlaps.Any())
+        if (_item is PlannerEvent eventItem)
         {
-            Console.WriteLine("Дата/час оновлено.");
-            return;
+            var overlaps = _planner.FindOverlapsForEvent(eventItem);
+            
+            if (!overlaps.Any())
+            {
+                Console.WriteLine("Дата/час оновлено.");
+                return;
+            }
+            
+            Console.WriteLine("Увага! Після зміни виникають накладки:");
+            ConsolePrinter.PrintOverlaps(overlaps);
+            
+            if (!ConsoleInput.Confirm("Залишити зміни?"))
+            {
+                _item.SetRelevantDateTime(oldDateTime);
+                Console.WriteLine("Зміни скасовано.");
+            }
         }
-
-        Console.WriteLine("Увага! Після зміни виникають накладки:");
-        // ConsolePrinter.PrintOverlaps(overlaps);
-
-        if (!ConsoleInput.Confirm("Залишити зміни?"))
-        {
-            _item.SetStartTime(oldStartTime);
-            Console.WriteLine("Зміни скасовано.");
-        }
+        
+        Console.WriteLine("Дата/час оновлено.");
     }
 
     private void ChangeEventDuration(PlannerEvent eventItem)
@@ -118,7 +117,7 @@ public class EditItemMenu
 
         eventItem.SetDuration(newDuration);
 
-        var overlaps = _planner.FindOverlapsForItem(eventItem);
+        var overlaps = _planner.FindOverlapsForEvent(eventItem);
 
         if (!overlaps.Any())
         {
@@ -127,7 +126,7 @@ public class EditItemMenu
         }
 
         Console.WriteLine("Увага! Після зміни виникають накладки:");
-        // ConsolePrinter.PrintOverlaps(overlaps);
+        ConsolePrinter.PrintOverlaps(overlaps);
 
         if (!ConsoleInput.Confirm("Залишити зміни?"))
         {
