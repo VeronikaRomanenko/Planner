@@ -19,6 +19,7 @@ public class PlannerTask : PlannerItem
     public void SetDueDate(DateTime? dueDate)
     {
         DueDate = dueDate;
+        ResetReminder();
     }
 
     public void Complete(DateTime completedAt)

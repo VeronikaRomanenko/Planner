@@ -8,13 +8,16 @@ public abstract class PlannerItem
     public string Title { get; private set; }
     public string Description { get; private set; }
     public string? Location { get; private set; }
+    public TimeSpan ReminderBefore { get; private set; } = TimeSpan.FromMinutes(30);
+    public bool ReminderSent { get; private set; }
     
     public IReadOnlyList<Performer> Performers => _performers;
     
     protected PlannerItem(
         string title,
         string description,
-        string? location = null
+        string? location = null,
+        TimeSpan? reminderBefore = null
     )
     {
         Id = Guid.NewGuid();
@@ -22,6 +25,7 @@ public abstract class PlannerItem
         SetTitle(title);
         SetDescription(description);
         SetLocation(location);
+        if (reminderBefore.HasValue) SetReminder(reminderBefore.Value);
     }
 
     public void SetTitle(string title)
@@ -32,12 +36,28 @@ public abstract class PlannerItem
 
     public void SetDescription(string description)
     {
-        Description = description ?? string.Empty;
+        Description = description;
     }
 
     public void SetLocation(string? location)
     {
         Location = string.IsNullOrWhiteSpace(location) ? null : location;
+    }
+
+    public void SetReminder(TimeSpan reminderBefore)
+    {
+        ReminderBefore = reminderBefore;
+        ResetReminder();
+    }
+
+    public void MarkReminderSent()
+    {
+        ReminderSent = true;
+    }
+
+    public void ResetReminder()
+    {
+        ReminderSent = false;
     }
 
     public void AddPerformer(Performer performer)

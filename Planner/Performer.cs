@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Planner;
 
 public class Performer
@@ -12,7 +14,7 @@ public class Performer
         SetName(name);
         SetEmail(email);
     }
-    
+
     public void SetName(string newName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(newName);
@@ -21,13 +23,9 @@ public class Performer
 
     public void SetEmail(string? newEmail)
     {
-        // if (!Regex.IsMatch(newEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase))
-        // {
-        //     Console.WriteLine("Невалідна електронна адреса");
-        //     return;
-        // }
-        
-        // TODO: validate email
+        if (newEmail is not null && !Regex.IsMatch(newEmail, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase))
+            throw new ArgumentException("Invalid email format");
+
         Email = newEmail;
     }
 }

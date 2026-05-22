@@ -19,7 +19,7 @@ public static class DemoData
         var event1 = new PlannerEvent(
             "Зустріч з викладачем",
             "Обговорення курсової роботи",
-            DateTime.Now.AddHours(2),
+            DateTime.Now.AddMinutes(30),
             TimeSpan.FromMinutes(60),
             "Аудиторія 204"
         );

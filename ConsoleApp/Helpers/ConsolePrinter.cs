@@ -132,6 +132,25 @@ public static class ConsolePrinter
         }
     }
 
+    public static void PrintNotifications(NotificationQueue queue)
+    {
+        var notifications = queue.DequeueAll();
+
+        if (!notifications.Any()) return;
+        
+        Console.WriteLine();
+        
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine("=== Нагадування ===");
+        
+        foreach (var notification in notifications)
+        {
+            Console.WriteLine($"- {notification}");
+        }
+        
+        Console.ResetColor();
+    }
+
     // public static void PrintOverlaps(
     //     IEnumerable<(PlannerItem First, PlannerItem Second)> overlaps
     // )

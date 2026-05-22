@@ -6,16 +6,20 @@ namespace ConsoleApp.Menus;
 public class MainMenu
 {
     private readonly PlannerManager _planner;
+    private readonly NotificationQueue _queue;
     
-    public MainMenu(PlannerManager planner)
+    public MainMenu(PlannerManager planner, NotificationQueue queue)
     {
         _planner = planner;
+        _queue = queue;
     }
 
     public void Run()
     {
         while (true)
         {
+            ConsolePrinter.PrintNotifications(_queue);
+            
             Console.WriteLine("=== Електронний щоденник справ ===");
             Console.WriteLine("1. Додати");
             Console.WriteLine("2. Переглянути за період");

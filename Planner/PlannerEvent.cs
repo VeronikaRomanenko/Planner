@@ -22,6 +22,7 @@ public class PlannerEvent : PlannerItem
     public void SetStartTime(DateTime startTime)
     {
         StartTime = startTime;
+        ResetReminder();
     }
     
     public void SetDuration(TimeSpan duration)
@@ -41,7 +42,7 @@ public class PlannerEvent : PlannerItem
                 "Event must have a start date."
             );
         
-        StartTime = newDate.Value;
+        SetStartTime(newDate.Value);
     }
 
     public override DateTime? GetRelevantDateTime()
