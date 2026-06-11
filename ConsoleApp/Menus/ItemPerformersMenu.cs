@@ -25,7 +25,6 @@ public class ItemPerformersMenu
                 Console.WriteLine();
             }
 
-            // TODO: show only performers that are not yet linked to the item
             if (_planner.Performers.Count > 0)
             {
                 Console.WriteLine("Доступні виконавці:");
@@ -33,7 +32,6 @@ public class ItemPerformersMenu
                 Console.WriteLine();
             }
             
-            // TODO: change list depending on current and available performers
             Console.WriteLine("1. Додати виконавця із списку");
             Console.WriteLine("2. Видалити виконавця із запису");
             Console.WriteLine("3. Створити нового виконавця");

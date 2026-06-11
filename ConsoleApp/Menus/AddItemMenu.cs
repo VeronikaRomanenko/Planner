@@ -88,11 +88,7 @@ public class AddItemMenu
         if (!overlaps.Any())
             return true;
 
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("Увага! Знайдено накладки:");
         ConsolePrinter.PrintOverlaps(overlaps);
-        Console.ResetColor();
 
         Console.WriteLine("1. Створити з накладкою");
         Console.WriteLine("2. Скасувати створення");

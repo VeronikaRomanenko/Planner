@@ -52,9 +52,4 @@ public static class PeriodSelector
 
         return (start, end);
     }
-
-    public static bool IsPastPeriod(DateTime? start, DateTime? end)
-    {
-        return end.HasValue && end.Value <= DateTime.Now;
-    }
 }

@@ -32,19 +32,17 @@ public class PlannerManager
         return performer;
     }
 
-    public bool RemovePerformer(Guid id)
+    public void RemovePerformer(Guid id)
     {
         var performer = _performers.FirstOrDefault(p => p.Id == id);
 
         if (performer is null)
-            return false;
+            return;
 
         _performers.Remove(performer);
 
         foreach (var item in _items)
             item.RemovePerformer(id);
-
-        return true;
     }
 
     public Performer? GetPerformerById(Guid id)

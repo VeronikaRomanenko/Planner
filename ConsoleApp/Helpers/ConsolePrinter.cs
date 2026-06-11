@@ -17,9 +17,13 @@ public static class ConsolePrinter
         string? notFoundMessage = null
     )
     {
-        if (!rows.Any() && notFoundMessage != null)
+        if (!rows.Any())
         {
-            Console.WriteLine(notFoundMessage);
+            if (notFoundMessage != null)
+            {
+                Console.WriteLine(notFoundMessage);
+            }
+
             return;
         }
 
@@ -126,10 +130,13 @@ public static class ConsolePrinter
             return;
         }
         
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("Увага! Знайдено накладки:");
         foreach (var overlap in overlapsList)
         {
             Console.WriteLine($"{overlap.Title}: {overlap.StartTime:dd.MM.yyyy HH:mm} - {overlap.EndTime:dd.MM.yyyy HH:mm}");
         }
+        Console.ResetColor();
     }
 
     public static void PrintNotifications(NotificationQueue queue)
@@ -150,77 +157,4 @@ public static class ConsolePrinter
         
         Console.ResetColor();
     }
-
-    // public static void PrintOverlaps(
-    //     IEnumerable<(PlannerItem First, PlannerItem Second)> overlaps
-    // )
-    // {
-    //     var overlapsList = overlaps.ToList();
-    //
-    //     if (!overlapsList.Any())
-    //     {
-    //         Console.WriteLine("Накладки не знайдено.");
-    //         return;
-    //     }
-    //
-    //     foreach (var overlap in overlapsList)
-    //     {
-    //         Console.ForegroundColor = ConsoleColor.Yellow;
-    //
-    //         Console.WriteLine(
-    //             $"- \"{overlap.First.Title}\" перетинається з \"{overlap.Second.Title}\""
-    //         );
-    //
-    //         Console.ResetColor();
-    //
-    //         PrintOverlapItemInfo(overlap.First);
-    //         PrintOverlapItemInfo(overlap.Second);
-    //
-    //         Console.WriteLine();
-    //     }
-    // }
-    //
-    // private static void PrintOverlapItemInfo(PlannerItem item)
-    // {
-    //     switch (item)
-    //     {
-    //         case PlannerEvent eventItem:
-    //             Console.WriteLine(
-    //                 $"  {eventItem.StartTime:dd.MM.yyyy HH:mm} - {eventItem.EndTime:HH:mm}"
-    //             );
-    //             break;
-    //
-    //         case PlannerTask taskItem
-    //             when taskItem.StartTime.HasValue &&
-    //                  taskItem.EstimatedDuration.HasValue:
-    //
-    //             var end = taskItem.StartTime.Value
-    //                 .Add(taskItem.EstimatedDuration.Value);
-    //
-    //             Console.WriteLine(
-    //                 $"  {taskItem.StartTime:dd.MM.yyyy HH:mm} - {end:HH:mm}"
-    //             );
-    //
-    //             break;
-    //     }
-    // }
-
-    // public static void PrintNotifications(
-    //     Services.NotificationQueue queue
-    // )
-    // {
-    //     var notifications = queue.DequeueAll();
-    //
-    //     foreach (var notification in notifications)
-    //     {
-    //         Console.ForegroundColor = ConsoleColor.Magenta;
-    //
-    //         Console.WriteLine();
-    //         Console.WriteLine(
-    //             $"[НАГАДУВАННЯ] {notification}"
-    //         );
-    //
-    //         Console.ResetColor();
-    //     }
-    // }
 }

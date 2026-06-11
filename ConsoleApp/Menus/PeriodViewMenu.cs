@@ -59,12 +59,9 @@ public class PeriodViewMenu
 
         if (overlaps.Any())
         {
-            // TODO: color
-            Console.WriteLine();
-            Console.WriteLine("Попередження про накладки:");
             ConsolePrinter.PrintOverlaps(overlaps);
         }
         
-        new PeriodActionsMenu(_planner, items.ToList(), start, end).Run();
+        new ListActionsMenu(_planner, items.ToList(), start, end).Run();
     }
 }

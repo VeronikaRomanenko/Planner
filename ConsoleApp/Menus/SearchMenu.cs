@@ -21,7 +21,6 @@ public class SearchMenu
         var start = ConsoleInput.ReadOptionalDateTime("Початок періоду (Enter — пропустити): ");
         var end = ConsoleInput.ReadOptionalDateTime("Кінець періоду (Enter — пропустити): ");
         var location = ConsoleInput.ReadOptionalString("Місце (Enter — пропустити): ");
-        // TODO: add search by performers
 
         var parameters = new PlannerSearchParams()
         {
@@ -35,6 +34,13 @@ public class SearchMenu
 
         ConsolePrinter.PrintItems(results);
         
-        // TODO: show menu
+        var overlaps = _planner.FindOverlaps(parameters);
+
+        if (overlaps.Any())
+        {
+            ConsolePrinter.PrintOverlaps(overlaps);
+        }
+        
+        new ListActionsMenu(_planner, results.ToList(), start, end).Run();
     }
 }

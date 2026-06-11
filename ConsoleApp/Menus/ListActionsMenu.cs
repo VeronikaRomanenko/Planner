@@ -3,14 +3,14 @@ using Planner;
 
 namespace ConsoleApp.Menus;
 
-public class PeriodActionsMenu
+public class ListActionsMenu
 {
     private readonly PlannerManager _planner;
     private readonly IReadOnlyList<PlannerItem> _items;
     private readonly DateTime? _start;
     private readonly DateTime? _end;
 
-    public PeriodActionsMenu(
+    public ListActionsMenu(
         PlannerManager planner,
         IReadOnlyList<PlannerItem> items,
         DateTime? start,
@@ -31,7 +31,7 @@ public class PeriodActionsMenu
             Console.WriteLine();
             Console.WriteLine("=== Дії зі списком ===");
             Console.WriteLine("1. Редагувати");
-            Console.WriteLine("2. Перенести справу");
+            Console.WriteLine("2. Перенести запис");
             Console.WriteLine("3. Виконати справу");
             Console.WriteLine("4. Видалити запис");
 

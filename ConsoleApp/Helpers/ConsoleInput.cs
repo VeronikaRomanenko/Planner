@@ -82,57 +82,6 @@ public static class ConsoleInput
         }
     }
     
-    public static int ReadInt(string message)
-    {
-        while (true)
-        {
-            Console.Write(message);
-
-            var value = Console.ReadLine();
-
-            if (int.TryParse(value, out var number))
-                return number;
-
-            PrintValidationError(
-                "Введіть ціле число."
-            );
-        }
-    }
-
-    public static int ReadPositiveInt(string message)
-    {
-        while (true)
-        {
-            Console.Write(message);
-
-            var value = Console.ReadLine();
-
-            if (int.TryParse(value, out var number) && number > 0)
-                return number;
-
-            PrintValidationError(
-                "Введіть додатне ціле число."
-            );
-        }
-    }
-
-    public static Guid ReadGuid(string message)
-    {
-        while (true)
-        {
-            Console.Write(message);
-
-            var value = Console.ReadLine();
-
-            if (Guid.TryParse(value, out var guid))
-                return guid;
-
-            PrintValidationError(
-                "Невірний формат GUID."
-            );
-        }
-    }
-    
     public static int ReadIndex(string message, int count)
     {
         while (true)

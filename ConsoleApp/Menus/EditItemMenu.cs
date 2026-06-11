@@ -97,7 +97,6 @@ public class EditItemMenu
                 return;
             }
             
-            Console.WriteLine("Увага! Після зміни виникають накладки:");
             ConsolePrinter.PrintOverlaps(overlaps);
             
             if (!ConsoleInput.Confirm("Залишити зміни?"))
@@ -125,7 +124,6 @@ public class EditItemMenu
             return;
         }
 
-        Console.WriteLine("Увага! Після зміни виникають накладки:");
         ConsolePrinter.PrintOverlaps(overlaps);
 
         if (!ConsoleInput.Confirm("Залишити зміни?"))

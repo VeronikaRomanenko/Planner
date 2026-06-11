@@ -13,7 +13,7 @@ public static class DemoData
 
         var performer2 = planner.AddPerformer(
             "Петро Петренко",
-            "oleksandr@example.com"
+            "example@example.com"
         );
 
         var event1 = new PlannerEvent(
